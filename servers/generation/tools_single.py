@@ -29,7 +29,9 @@ def list_templates(
     for name, meta in _registry().items():
         if kind and meta.get("kind") != kind:
             continue
-        if stack and stack not in (meta.get("stack") or []):
+        if stack and not any(
+            stack.lower() in token.lower() for token in (meta.get("stack") or [])
+        ):
             continue
         if form and not any(
             form.lower() in alias.lower() for alias in (meta.get("forms") or [])

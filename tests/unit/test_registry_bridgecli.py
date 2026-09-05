@@ -23,6 +23,13 @@ def test_list_templates_filter():
     }
     vue = tools_single.list_templates(stack="vue3")
     assert [r["name"] for r in vue] == ["vite-vue-spa-template"]
+    react = tools_single.list_templates(stack="react")
+    assert [r["name"] for r in react] == ["vite-react-spa-template"]
+    ts = tools_single.list_templates(stack="ts")  # 子串匹配：typescript 命中两个前端
+    assert {r["name"] for r in ts} == {
+        "vite-react-spa-template",
+        "vite-vue-spa-template",
+    }
 
 
 def test_list_templates_form_alias_match():
