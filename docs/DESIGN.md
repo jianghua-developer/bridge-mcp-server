@@ -62,7 +62,7 @@
 
 ```text
 bridge-mcp-server/
-├── docs/                        # DESIGN / implementation-plan / …
+├── docs/                        # DESIGN / onboarding-SOP
 ├── pyproject.toml               # uv 单项目（package=false）；dev: pytest
 ├── bridge_mcp/                  # 共享胶水（无 MCP 面）——仅供各 server 复用
 │   ├── config.py                #   server 配置：桥 cli 可执行入口（env：BRIDGE_EXE > BRIDGE）

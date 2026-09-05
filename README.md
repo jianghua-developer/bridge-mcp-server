@@ -25,7 +25,7 @@
 多端：纯 cli shell-out 桥（generate + 内省 list-combos/show-combo），server 不直读 combos.yaml
 ```
 
-设计定稿见 [docs/DESIGN.md](docs/DESIGN.md)；跨仓落地见 [docs/implementation-plan.md](docs/implementation-plan.md)（P0-P3 已完成并推送）。
+设计定稿见 [docs/DESIGN.md](docs/DESIGN.md)；阶段落地已随各仓提交完成（P0-P4 收口，跨仓清单见 DESIGN §13）。
 
 ## 目录结构
 
