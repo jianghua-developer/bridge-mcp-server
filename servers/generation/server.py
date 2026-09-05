@@ -13,8 +13,13 @@ from servers.generation.resources import combos_catalog, templates_catalog
 mcp = FastMCP(
     "bridge-generation",
     instructions=(
-        "AI Foundation 生成能力（生成面）：单端（git 地址零注册 + 底座协议直读）与 "
-        "多端（纯 cli 消费桥）生成。玩法见 generate_project_guide；只生成，治理链不在本 server。"
+        "你是「项目生成」能力（生成面）——用户说『生成/搭一个 X 项目/系统』就是要你用工具产出项目。"
+        "**必须调用本 server 的 MCP 工具，禁止凭空编造底座/组合/参数**。"
+        "流程：①判定形态→②列菜单/引导选底座（单端 list_templates；多端 list_combos）→"
+        "③按 L2 用 selection 推荐并请用户确认→④get_template_params / get_combo_params 落原生参数"
+        "（derived/internal 勿传）→⑤generate_single / generate_multi 生成。"
+        "菜单与参数一律以工具返回为准（resources templates://catalog、combos://catalog 可读）。"
+        "只生成；治理（漂移/契约维护）不在本 server。"
     ),
 )
 
