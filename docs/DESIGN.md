@@ -185,15 +185,15 @@ templates:
   ```
 - server 侧严格校验：`template` 为 git 地址；clone 后读其 params.json（无协议则回退 copier.yml）；`params` 键 ⊆ 原生参数集（派生 → 拒绝）；值类型/choices 合法；`target_dir` 为空或不存在。
 - 执行：clone → 指 template/ → copier copy。
-- 返回：`{ status, target_dir, structure, readme_path, 后续提示 }`。
-- **零注册**：不在 templates.yaml 的地址同样可生成；注册表只是引导菜单（§4.8）。
+- 返回：`{ status, target_dir, structure, readme_path, next_steps（后续提示） }`。
+- **零注册**：不在 templates.yaml 的地址同样可生成；注册表只是引导菜单（§4.8）。无 params.json 的通用 copier 模板地址回退 template/copier.yml 内省（无 selection 区），见 §5.1 base 兼容。
 
 ### 6.2 get_template_params（单端参数内省 = 落参与选择地基）
 
 - 入参：`git_url`
 - 返回：clone 后读底座 params.json 两区——
   - **原生参数（要问的）**：`name / type / required / has_default / default / choices`
-  - **派生参数（自动算的，只读）**：`name / derived: true / 由哪些输入算出`
+  - **派生参数（自动算的，只读）**：`name / derived: true`（名字列表；具体输入/算法见底座模板 copier.yml 或契约——协议暂无 `computed_from` 元数据，见 A3 收敛）
   - **selection（选择地基）**：`suited_for / tradeoffs`（底座 `selection` 区；无协议底座缺省）
 - 职责：单端 L2/L3 的**选择事实来源**（对短名单按需读）与落参前的参数集来源。**零注册**——协议自述，不查 templates.yaml 以外任何注册表。
 
@@ -208,7 +208,7 @@ templates:
 - 入参 spec（结构化，JSON）：`{ combo, params, target_dir }`。
 - server 侧严格校验（经桥内省或桥自身）：`combo` 在注册表内；`params` ⊆ 该组合原生参数集；值类型/choices 合法；`target_dir` 为空或不存在。
 - 执行：shell-out `cli.py generate <combo> <project>`（桥单模式、只收注册 combo）。
-- 返回：`{ status, target_dir, structure, contract_path, readme_path, 后续提示 }`。
+- 返回：`{ status, target_dir, structure, contract_path, readme_path, next_steps（后续提示） }`。
 
 ### 6.5 list_combos（多端菜单，L1 候选集；经桥）
 

@@ -10,12 +10,66 @@ from pathlib import Path
 # selection 字段集（单一真源在协议 SCHEMA.md；与桥 bridge/combos.py 同步演进，S3）
 SELECTION_FIELDS = ("suited_for", "tradeoffs")
 
+# copier.yml 里 jinja 表达式默认值/条件值的定界符（前端 _envops 用 [[]]，后端用 {{}}）
+_JINJA_MARKERS = ("{{", "}}", "{%", "%}", "[[", "]]", "[%", "%]")
+
 
 def load_params_json(repo: Path) -> dict:
     p = repo / "params.json"
     if not p.exists():
-        raise FileNotFoundError(f"底座无 params.json（{p}）——未接入协议或非系列底座")
+        raise FileNotFoundError(f"底座无 params.json（{p}）")
     return json.loads(p.read_text(encoding="utf-8"))
+
+
+# ── A1：无协议底座回退 copier.yml 内省（⑥其它 / 通用 copier 模板，DESIGN §5.1）──
+
+
+def _is_expression(value) -> bool:
+    return isinstance(value, str) and any(m in value for m in _JINJA_MARKERS)
+
+
+def _normalize_choices(raw) -> list[dict] | None:
+    """choices → [{value}] / [{value, disabled, reason}]（镜像协议 gen-params）。"""
+    if raw is None:
+        return None
+    out: list[dict] = []
+    if isinstance(raw, list):
+        out = [{"value": v} for v in raw]
+    elif isinstance(raw, dict):
+        for _label, v in raw.items():
+            if isinstance(v, dict):
+                entry = {"value": v.get("value")}
+                if v.get("validator"):
+                    entry["disabled"] = True
+                    entry["reason"] = v["validator"]
+                out.append(entry)
+            else:
+                out.append({"value": v})
+    return out or None
+
+
+def introspect_copier(template_dir: Path) -> dict:
+    """无 params.json 时，用 copier 内省 template/copier.yml 拿原生参数（无 selection 区）。
+
+    与协议 gen-params 同源逻辑（copier._template.Template.questions_data）；derived 只取
+    when 字面 False；jinja 表达式默认省略（视为必填）。copier 9.17.1 与本仓依赖一致。
+    """
+    import copier._template  # noqa: F401  内部 API（同协议 gen-params，钉版本）
+    from copier._template import Template
+
+    questions = Template(url=str(template_dir)).questions_data
+    params: dict[str, dict] = {}
+    for name, spec in questions.items():
+        entry: dict = {"type": spec.get("type", "str")}
+        choices = _normalize_choices(spec.get("choices"))
+        if choices:
+            entry["choices"] = choices
+        default = spec.get("default")
+        if "default" in spec and default is not None and not _is_expression(default):
+            entry["default"] = default
+        entry["derived"] = spec.get("when") is False
+        params[name] = entry
+    return {"schema_version": None, "params": params, "selection": None}  # 非协议底座
 
 
 def split_params(doc: dict) -> tuple[dict, dict]:

@@ -66,3 +66,32 @@ def test_extract_selection():
     doc = {"params": {}, "selection": {"suited_for": ["x"]}}
     assert protocol.extract_selection(doc) == {"suited_for": ["x"]}
     assert protocol.extract_selection({"params": {}}) is None
+
+
+def test_introspect_copier_fallback(tmp_path):
+    """A1：无 params.json 的通用 copier 模板 → copier.yml 内省出原生参数（无 selection）。"""
+    tpl = tmp_path / "tpl"
+    tpl.mkdir()
+    (tpl / "README.md").write_text("x", encoding="utf-8")
+    (tpl / "copier.yml").write_text(
+        "project_name: {type: str}\n"
+        "with_db: {type: bool, default: true}\n"
+        "flavor:\n"
+        "  type: str\n"
+        "  choices: {a: a, b: b, 'c': {value: c, validator: 未实现}}\n"
+        "  default: a\n"
+        "derived_x: {type: yaml, default: '[x]', when: false}\n",
+        encoding="utf-8",
+    )
+    doc = protocol.introspect_copier(tpl)
+    p = doc["params"]
+    assert doc["selection"] is None
+    assert p["project_name"]["derived"] is False
+    assert "default" not in p["project_name"]  # 无默认 → 必填
+    assert p["with_db"]["default"] is True
+    assert p["flavor"]["choices"] == [
+        {"value": "a"},
+        {"value": "b"},
+        {"value": "c", "disabled": True, "reason": "未实现"},
+    ]
+    assert p["derived_x"]["derived"] is True

@@ -43,7 +43,7 @@ def list_templates(
 def get_template_params(git_url: str, version: str | None = None) -> dict:
     """clone 底座 → 读 params.json 两区 → 原生/派生/selection 分列。"""
     repo = ensure_clone(git_url, version)
-    doc = protocol.load_params_json(repo)
+    doc = _load_doc(repo)
     native, derived = protocol.split_params(doc)
     sel = protocol.extract_selection(doc)
     # S3：未知 selection 字段显式告警（不静默丢弃）
@@ -71,6 +71,14 @@ def _template_dir(repo: Path) -> Path:
     return repo
 
 
+def _load_doc(repo: Path) -> dict:
+    """读底座协议；无 params.json（⑥其它/通用 copier 模板）→ 回退 copier.yml 内省（A1）。"""
+    try:
+        return protocol.load_params_json(repo)
+    except FileNotFoundError:
+        return protocol.introspect_copier(_template_dir(repo))
+
+
 def generate_single(
     git_url: str,
     params: dict,
@@ -80,7 +88,7 @@ def generate_single(
 ) -> dict:
     """clone → 读协议 → spec 校验 → 指 template/ → copier copy → 结构化返回。"""
     repo = ensure_clone(git_url, version)
-    doc = protocol.load_params_json(repo)
+    doc = _load_doc(repo)
     native, _ = protocol.split_params(doc)
     errors = protocol.validate_spec(params, native)
     if errors:
@@ -108,4 +116,8 @@ def generate_single(
         "target_dir": str(dest),
         "structure": structure,
         "readme_path": str(readme) if readme.exists() else None,
+        "next_steps": (
+            f"项目已生成于 {dest}：先读 README.md 与 docs/ 起步；"
+            "依赖安装/派生参数由底座 _tasks 与 copier 处理。"
+        ),
     }

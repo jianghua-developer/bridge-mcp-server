@@ -36,6 +36,8 @@ def generate_multi(
 ) -> dict:
     """shell-out 桥 `generate <combo> <project>`（选项由桥 schema 数据驱动）。"""
     dest = Path(target_dir)
+    if dest.exists() and any(dest.iterdir()):
+        raise ValueError(f"target_dir 非空或已存在内容，拒绝覆盖: {dest}")
     BridgeCli().generate(combo, dest, params, skip_tasks=skip_tasks)
     structure = sorted(p.name for p in dest.iterdir()) if dest.exists() else []
     contract = dest / "docs" / "CONTRACT.md"
@@ -47,4 +49,8 @@ def generate_multi(
         "structure": structure,
         "contract_path": str(contract) if contract.exists() else None,
         "readme_path": str(readme) if readme.exists() else None,
+        "next_steps": (
+            f"项目已生成于 {dest}：按 README.md 入口起步，前后端对照 "
+            "docs/CONTRACT.md 契约实现业务（契约已随生成对齐）。"
+        ),
     }
