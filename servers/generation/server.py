@@ -31,7 +31,8 @@ mcp = FastMCP(
 def list_templates(
     kind: str | None = None, stack: str | None = None, form: str | None = None
 ):
-    """单端候选菜单（L1）：离线读注册表过滤，kind/stack/form 可选。"""
+    """单端候选菜单（L1）：离线读注册表过滤，kind/stack/form 可选（子串匹配；
+    受控值/同义词见 templates://catalog 词表提示）。"""
     return tools_single.list_templates(kind, stack, form)
 
 

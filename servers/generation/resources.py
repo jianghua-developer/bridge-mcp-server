@@ -4,13 +4,17 @@
 """
 
 from bridge_mcp.bridge_cli import BridgeCli
-from servers.generation.tools_single import list_templates
+from servers.generation.tools_single import L1_FILTER_HINT, list_templates
 
 
 def templates_catalog() -> str:
-    """单端候选注册表文本视图（自持 templates.yaml）。"""
+    """单端候选注册表文本视图（自持 templates.yaml，含 L1 受控词表提示）。"""
     rows = list_templates()
-    lines = ["# 单端可生成底座（薄菜单，非门槛；不在册地址照常 generate_single）"]
+    lines = [
+        L1_FILTER_HINT.rstrip(),
+        "",
+        "# 单端可生成底座（薄菜单，非门槛；不在册地址照常 generate_single）",
+    ]
     for r in rows:
         lines.append(
             f"- {r['name']}  [{r['kind']}] stack={','.join(r['stack'])} forms={','.join(r['forms'])}"

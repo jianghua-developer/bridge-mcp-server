@@ -5,7 +5,7 @@ import sys
 import pytest
 
 from bridge_mcp import bridge_cli
-from servers.generation import tools_multi, tools_single
+from servers.generation import resources, tools_multi, tools_single
 
 # ── list_templates（读注册表，离线）─────────────────────────────
 
@@ -102,3 +102,11 @@ def test_list_combos_stack_filter():
     got = tools_multi._filter_rows(rows, stack="vue")
     assert [r["combo"] for r in got] == ["python-vue"]  # 仅 vue 行命中
     assert tools_multi._filter_rows(rows, None) == rows
+
+
+def test_templates_catalog_includes_l1_hint():
+    """资源全文贴 L1 受控词表提示，壳不猜过滤值。"""
+    text = resources.templates_catalog()
+    assert "受控 L1 过滤" in text
+    assert "kind ∈ frontend | backend | cli | fullstack" in text
+    assert "python-fastapi-template" in text

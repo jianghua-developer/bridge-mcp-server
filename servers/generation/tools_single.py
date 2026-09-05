@@ -13,6 +13,14 @@ from bridge_mcp.git import ensure_clone
 
 _DATA = Path(__file__).parent / "data" / "templates.yaml"
 
+# L1 受控过滤词表提示（与 templates.yaml 头注同源；贴给壳/LLM，别让它猜过滤值）
+L1_FILTER_HINT = (
+    "受控 L1 过滤（list_templates 带参，子串匹配）：\n"
+    "  kind ∈ frontend | backend | cli | fullstack\n"
+    "  form 别名：spa/前端单页应用/纯前端…、api/后端服务/纯后端…、fullstack/单仓全栈、cli/命令行\n"
+    "  stack 同义词：ts=typescript、py=python、reactjs=react、vue3=vue …\n"
+)
+
 
 def _registry() -> dict:
     return yaml.safe_load(_DATA.read_text(encoding="utf-8")).get("templates", {})
