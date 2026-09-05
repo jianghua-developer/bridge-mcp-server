@@ -55,7 +55,27 @@ claude mcp add bridge-gen --transport stdio \
 claude mcp list
 ```
 
-然后直接说「帮我生成一个 **X** 项目」即可触发 `generate-project` skill / 六工具。
+> **为什么不够**：MCP `generate_project_guide` 只是「一段内容」，不会自动让模型调工具。要自然语言直接触发工具，靠两层信号——server `instructions`（已内置：收到生成需求必须调六工具、禁止编造）+ 壳侧 **skill**（命中即按流程走并调工具）。skill 是 Claude Code 里最可靠的「玩法」载体。
+
+### 挂载玩法 skill（强化工具触发）
+
+canonical 在仓库 [skills/generate-project/SKILL.md](skills/generate-project/SKILL.md)。Claude Code 只在本项目目录内自动发现项目级 skill；**要在任意目录都能触发，请装到全局**：
+
+```bash
+mkdir -p ~/.claude/skills/generate-project
+cp skills/generate-project/SKILL.md ~/.claude/skills/generate-project/
+```
+
+- 之后说「帮我生成一个 **X** 项目/系统」即命中 `generate-project` → 模型会调用 bridge-gen 六工具（菜单/参数/selection 一律以工具返回为准，不脑补）。
+
+- 仍未触发，先查连接与点名：
+
+  ```bash
+  claude mcp list   # bridge-gen 应为 connected；工具形如 mcp__bridge-gen__list_combos
+  # 或点名触发：『用 bridge-gen 的工具』 / 『用 generate-project 走一遍』
+  ```
+
+- 改玩法只改仓库 canonical（`skills/generate-project/`），需要时重新同步全局一份即可（内容与 `~/.claude` 允许有版本差，canonical 以仓库为准）。
 
 ## 环境变量
 
