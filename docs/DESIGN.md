@@ -139,17 +139,17 @@ templates:
     git: https://github.com/jianghua-developer/vite-react-spa-template.git
     kind: frontend             # 离线 L1 过滤（frontend/backend/cli/…）
     stack: [react, vite, typescript]
-    forms: [④纯前端]            # 该底座可直生成的形态（②-⑥ 类型标签）
+    forms: [spa]               # 单端形态受控词（spa/api/fullstack/cli）；DESIGN ④纯前端 ⇒ spa
   python-fastapi-template:
     git: …
     kind: backend
     stack: [python, fastapi]
-    forms: [③纯后端]
+    forms: [api]               # ③纯后端 ⇒ api
   my-cli-template:             # 纯单端底座：只在此注册，永不进桥
     git: …
     kind: cli
     stack: [python, click]
-    forms: [⑤纯命令行]
+    forms: [cli]               # ⑤纯命令行 ⇒ cli
 ```
 
 **字段纪律**：表内只放**离线 L1 需要的身份/标签**（name/git/kind/stack/forms）。`suited_for / tradeoffs` 等深选择事实**不进这张表**——单一真源在底座 `selection` 区，避免双写漂移，也保证「不在册地址经协议自述」成立。深事实的按需读取走 `get_template_params`（§6.2，只对 L2/L3 短名单 clone）。

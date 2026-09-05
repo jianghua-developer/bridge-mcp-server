@@ -37,7 +37,7 @@ templates:
     git: <git@github 地址或 https>
     kind: frontend | backend | cli   # 受控：单端用 kind 大类（cli/nuxt 等单端专属另给，见下）
     stack: [<技术 token 列表>]        # L1 过滤 token（如 python, click / nuxt, vue）
-    forms: ["<该底座可直生成的形态，DESIGN ②-⑥ 标签>"]
+    forms: ["<受控语义 token：spa | api | fullstack | cli，见 templates.yaml 头注>"]
 ```
 
 - **kind 取值**：现役 `frontend` / `backend`；纯单端专属（cli/nuxt 等）若需 L1 可加 `cli` / `fullstack`——**加前先与本仓 design/玩法对齐**，别发明新词不同步（guide 受控枚举同源）。
