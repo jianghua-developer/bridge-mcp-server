@@ -1,7 +1,7 @@
 # bridge-mcp-server 设计文档
 
 > AI Foundation 系列 · 能力层壳无关封装（MCP）
-> 状态：设计定稿（2026-09 评审收敛：双路径×双链、底座协议两区、单端候选注册表；尚未 init git / 建 pyproject / 起代码骨架）
+> 状态：设计定稿（2026-09 评审收敛：双路径×双链、协议两区、单端候选注册表）。**P3 生成面 server 骨架已落地**（uv 项目，main 已推 origin）——目录见 §3.1；治理面（governance）为占位未实现；S3 协议 SCHEMA 契约点跨仓回写待办。
 
 ## 1. 定位
 
@@ -65,7 +65,7 @@ bridge-mcp-server/
 ├── docs/                        # DESIGN / implementation-plan / …
 ├── pyproject.toml               # uv 单项目（package=false）；dev: pytest
 ├── bridge_mcp/                  # 共享胶水（无 MCP 面）——仅供各 server 复用
-│   ├── config.py                #   server 配置：桥 cli 路径（cli.py / dist/bridge）
+│   ├── config.py                #   server 配置：桥 cli 可执行入口（env：BRIDGE_EXE > BRIDGE）
 │   ├── bridge_cli.py            #   桥 cli shell-out client（--json，按 server 传子命令白名单）
 │   ├── protocol.py              #   底座 params.json（两区）读取 / spec 校验
 │   └── selection.py             #   selection 字段集（单一真源引用协议 SCHEMA，S3）
@@ -78,8 +78,7 @@ bridge-mcp-server/
 │   │   ├── guide.py             #   generate_project_guide（玩法，引用注册表不抄内容）
 │   │   └── data/templates.yaml  #   单端候选注册表（薄指针）
 │   └── governance/              # 未来车道 · 治理面 MCP（占位，见 series 后期待办）
-│       ├── server.py            #   check 链工具（暂不实现；本主线不建代码）
-│       └── README.md            #   边界与立项说明
+│       └── README.md            #   边界与立项说明（不建 server.py）
 └── tests/
     ├── unit/                    # 各 server 单测（mock 桥 cli / 协议 / copier）
     └── e2e/                     # 起 server：generate_single / generate_multi 真实核心
