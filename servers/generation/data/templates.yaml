@@ -1,0 +1,20 @@
+# templates.yaml —— 单端候选注册表（薄指针菜单，非生成门槛）
+# 字段纪律（DESIGN §5.3）：只放离线 L1 身份/标签（name/git/kind/stack/forms）；
+# 深选择事实（suited_for/tradeoffs）单一真源在各底座 params.json selection 区，不抄此表。
+# 共享底座用与 combos.yaml bases 相同裸名（同一身份）；纯单端底座（cli/nuxt 等）只在此注册。
+templates:
+  vite-react-spa-template:
+    git: https://github.com/jianghua-developer/vite-react-spa-template.git
+    kind: frontend
+    stack: [react, vite, typescript]
+    forms: ["④纯前端"]
+  vite-vue-spa-template:
+    git: https://github.com/jianghua-developer/vite-vue-spa-template.git
+    kind: frontend
+    stack: [vue3, vite, typescript]
+    forms: ["④纯前端"]
+  python-fastapi-template:
+    git: https://github.com/jianghua-developer/python-fastapi-template.git
+    kind: backend
+    stack: [python, fastapi]
+    forms: ["③纯后端"]

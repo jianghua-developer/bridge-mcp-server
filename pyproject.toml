@@ -1,0 +1,26 @@
+[project]
+name = "bridge-mcp-server"
+version = "0.1.0"
+description = "AI Foundation 能力层壳无关封装（MCP）：生成面 server（单端协议链 + 多端纯 cli 消费桥）"
+requires-python = ">=3.11"
+# 单端链经 copier API 执行、多端经桥 cli shell-out；copier 钉 9.17.1（全链统一）
+dependencies = [
+    "fastmcp>=2.0",
+    "copier==9.17.1",
+    "pyyaml>=6.0",
+]
+
+# 非发布型工具项目：uv sync 只装依赖，不构建/安装本项目
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.8",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# 根目录入 sys.path（替代根 conftest.py）：bridge_mcp/ 与 servers/ 可导入
+pythonpath = ["."]
