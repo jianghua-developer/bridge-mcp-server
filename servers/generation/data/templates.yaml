@@ -10,19 +10,21 @@
 #   api / 后端服务 / 纯后端          （独立 API 后端）
 #   fullstack / 单仓全栈 / 全栈单仓  （自含 BFF/SSR，如 Nuxt）
 #   cli / 命令行 / 命令行工具
+# stack：技术 token + 常见同义词（便于口语/缩写命中，子串或别名 token 均可）：如
+#   typescript→ts、react→reactjs、vue→vue3、python→py、vite→vitejs 等
 templates:
   vite-react-spa-template:
     git: https://github.com/jianghua-developer/vite-react-spa-template.git
     kind: frontend
-    stack: [react, vite, typescript]
+    stack: [react, reactjs, vite, typescript, ts]
     forms: ["spa", "前端单页应用", "纯前端", "单页应用"]
   vite-vue-spa-template:
     git: https://github.com/jianghua-developer/vite-vue-spa-template.git
     kind: frontend
-    stack: [vue3, vite, typescript]
+    stack: [vue, vue3, vite, typescript, ts]
     forms: ["spa", "前端单页应用", "纯前端", "单页应用"]
   python-fastapi-template:
     git: https://github.com/jianghua-developer/python-fastapi-template.git
     kind: backend
-    stack: [python, fastapi]
+    stack: [python, py, fastapi]
     forms: ["api", "后端服务", "纯后端", "后端 API"]

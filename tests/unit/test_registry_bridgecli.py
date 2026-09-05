@@ -32,6 +32,13 @@ def test_list_templates_filter():
         "vite-react-spa-template",
         "vite-vue-spa-template",
     }
+    ts = tools_single.list_templates(stack="ts")  # 同义词 token：ts = typescript
+    assert {r["name"] for r in ts} == {
+        "vite-react-spa-template",
+        "vite-vue-spa-template",
+    }
+    py = tools_single.list_templates(stack="py")
+    assert [r["name"] for r in py] == ["python-fastapi-template"]
 
 
 def test_list_templates_form_alias_match():
