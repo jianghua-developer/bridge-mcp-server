@@ -18,21 +18,33 @@ def _native():
 
 def test_validate_spec_ok():
     assert (
-        protocol.validate_spec({"auth_mode": "opaque", "with_db": True}, _native())
+        protocol.validate_spec(
+            {"auth_mode": "opaque", "with_db": True, "project_name": "app"}, _native()
+        )
         == []
     )
 
 
 def test_validate_spec_rejects_derived_and_unknown():
     errs = protocol.validate_spec({"child_apps": [], "nope": 1}, _native())
-    assert any("未知/派生" in e and "child_apps" in e for e in errs)
-    assert any("nope" in e for e in errs)
+    assert any("child_apps" in e and "派生" in e for e in errs)
+    assert any("nope" in e and "未知" in e for e in errs)
 
 
 def test_validate_spec_choice_and_type():
     errs = protocol.validate_spec({"auth_mode": "jwt", "with_db": "yes"}, _native())
     assert any("choices" in e for e in errs)
     assert any("布尔" in e for e in errs)
+
+
+def test_validate_spec_missing_required():
+    """必填原生参数（project_name 无 default）缺失 → 报错；提供后通过。"""
+    errs = protocol.validate_spec({"auth_mode": "opaque"}, _native())
+    assert any("project_name" in e and "必填" in e for e in errs)
+    ok = protocol.validate_spec(
+        {"auth_mode": "opaque", "project_name": "app"}, _native()
+    )
+    assert ok == []
 
 
 def test_describe_params_marks_required():

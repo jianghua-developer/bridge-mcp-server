@@ -26,12 +26,25 @@ def split_params(doc: dict) -> tuple[dict, dict]:
     return native, derived
 
 
+def _has_default(spec: dict) -> bool:
+    """是否可省略：spec 带字面 default 且非 None（与 describe_params 的 required 同源）。"""
+    return "default" in spec and spec.get("default") is not None
+
+
 def validate_spec(params: dict, native: dict) -> list[str]:
-    """spec 校验：键 ⊆ 原生参数集、值类型/choices 合法。返回错误列表（空 = 合法）。"""
+    """严格 spec 校验：键 ⊆ 原生参数、派生禁止、值类型/choices 合法、必填齐全。
+
+    返回错误列表（空 = 合法）。参数显式传 None 视为缺省（计入必填检查）。
+    """
+    provided = params or {}
     errors: list[str] = []
-    for name, value in params.items():
+
+    # 1) 键与值：非原生/派生禁止；类型与启用 choices 只对已提供值校验
+    for name, value in provided.items():
+        if value is None:
+            continue  # None = 未提供，交给必填检查
         if name not in native:
-            errors.append(f"未知/派生参数 {name}（派生参数禁止传入）")
+            errors.append(f"参数 {name} 非原生/未知（派生参数禁止传入）")
             continue
         spec = native[name]
         ptype = spec.get("type", "str")
@@ -44,6 +57,13 @@ def validate_spec(params: dict, native: dict) -> list[str]:
         choices = [c["value"] for c in spec.get("choices", []) if not c.get("disabled")]
         if choices and value not in choices:
             errors.append(f"{name} 取值不在启用 choices 内: {choices}")
+
+    # 2) 必填：无字面 default 的原生参数必须提供（None 视为未提供）
+    for name, spec in native.items():
+        if name in provided and provided.get(name) is not None:
+            continue
+        if not _has_default(spec):
+            errors.append(f"缺少必填原生参数 {name}")
     return errors
 
 
