@@ -1,0 +1,18 @@
+# 项目级 ruff 配置（钉规则，避免随 ruff 默认集漂移——此前默认规则报了 I001/PLW1510）
+# 与系列其他仓（fullstack-bridge）风格一致。
+
+# 同 Black 的行长与缩进
+line-length = 88
+indent-width = 4
+target-version = "py312"
+
+[lint]
+# 显式规则集：E4/E7/E9/F + I（import 排序，配合 format）
+select = ["E4", "E7", "E9", "F", "I"]
+ignore = []
+
+[lint.isort]
+known-first-party = ["bridge_mcp", "servers"]
+
+[format]
+quote-style = "double"
