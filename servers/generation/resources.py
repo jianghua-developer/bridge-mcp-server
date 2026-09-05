@@ -4,14 +4,14 @@
 """
 
 from bridge_mcp.bridge_cli import BridgeCli
-from servers.generation.tools_single import L1_FILTER_HINT, list_templates
+from servers.generation.tools_single import filter_hint, list_templates
 
 
 def templates_catalog() -> str:
-    """单端候选注册表文本视图（自持 templates.yaml，含 L1 受控词表提示）。"""
+    """单端候选注册表文本视图（自持 templates.yaml，词表提示由 _filter_vocab 生成）。"""
     rows = list_templates()
     lines = [
-        L1_FILTER_HINT.rstrip(),
+        filter_hint().rstrip(),
         "",
         "# 单端可生成底座（薄菜单，非门槛；不在册地址照常 generate_single）",
     ]
