@@ -32,23 +32,18 @@ def test_list_templates_filter():
         "vite-react-spa-template",
         "vite-vue-spa-template",
     }
-    ts = tools_single.list_templates(stack="ts")  # 同义词 token：ts = typescript
-    assert {r["name"] for r in ts} == {
-        "vite-react-spa-template",
-        "vite-vue-spa-template",
-    }
-    py = tools_single.list_templates(stack="py")
+    py = tools_single.list_templates(stack="py")  # 子串：py 命中 python
     assert [r["name"] for r in py] == ["python-fastapi-template"]
 
 
-def test_list_templates_form_alias_match():
-    """form 按别名子串匹配：口语『纯前端/单页应用』命中前端 SPA。"""
-    for alias in ("spa", "纯前端", "单页应用"):
-        got = tools_single.list_templates(form=alias)
-        assert {r["name"] for r in got} == {
-            "vite-react-spa-template",
-            "vite-vue-spa-template",
-        }, alias
+def test_list_templates_form_filter_no_synonyms():
+    """form 只对行内 token 子串；无同义词层（A 简化）——'spa' 命中，口语词不再翻译。"""
+    got = tools_single.list_templates(form="spa")
+    assert {r["name"] for r in got} == {
+        "vite-react-spa-template",
+        "vite-vue-spa-template",
+    }
+    assert tools_single.list_templates(form="前端") == []  # 无 spa→纯前端 同义词层
     assert tools_single.list_templates(form="cli") == []  # 现役无 cli
 
 
@@ -107,6 +102,6 @@ def test_list_combos_stack_filter():
 def test_templates_catalog_includes_l1_hint():
     """资源全文贴 L1 受控词表提示，壳不猜过滤值。"""
     text = resources.templates_catalog()
-    assert "受控 L1 过滤" in text
+    assert "L1 过滤" in text
     assert "kind ∈ frontend | backend | cli | fullstack" in text
     assert "python-fastapi-template" in text

@@ -3,8 +3,8 @@
 零注册：git 地址即身份——clone → 读底座 params.json（两区）/ 回退 copier.yml → spec 校验 →
 指 template/ → copier copy。不在册地址照常可生成（templates.yaml 只是菜单）。
 
-L1 词表单一真源在 templates.yaml `_filter_vocab`：匹配展开与词表提示（filter_hint）都由它生成，
-勿在别处另写词表（防双源漂移）。
+L1 过滤（A 简化）：kind 精确；stack/form 对行内 token 子串。不维护同义词/别名——消费方自带
+LLM 会读行内数据自行传参。
 """
 
 from pathlib import Path
@@ -17,23 +17,8 @@ from bridge_mcp.git import ensure_clone
 _DATA = Path(__file__).parent / "data" / "templates.yaml"
 
 
-def _data() -> tuple[dict, dict]:
-    """返回 (templates 行源, _filter_vocab 词表)。"""
-    raw = yaml.safe_load(_DATA.read_text(encoding="utf-8"))
-    return raw.get("templates", {}), raw.get("_filter_vocab", {})
-
-
-def _vocab() -> dict:
-    return _data()[1]
-
-
-def _expand(tokens: list[str], synonyms: dict) -> list[str]:
-    """token 列表展开 = 自身 + 同义词（供子串/别名命中）。"""
-    out: list[str] = []
-    for t in tokens:
-        out.append(t)
-        out.extend(synonyms.get(t, []))
-    return out
+def _raw() -> dict:
+    return yaml.safe_load(_DATA.read_text(encoding="utf-8"))
 
 
 # ── list_templates（DESIGN §6.3：单端菜单，L1 候选集）──────────────
@@ -42,22 +27,18 @@ def _expand(tokens: list[str], synonyms: dict) -> list[str]:
 def list_templates(
     kind: str | None = None, stack: str | None = None, form: str | None = None
 ) -> list[dict]:
-    """单端候选注册表行（离线）。kind 精确、stack/form 子串/同义词匹配（词表自 templates.yaml）。"""
-    rows_src, vocab = _data()
-    form_syn = vocab.get("form_synonyms", {})
-    stack_syn = vocab.get("stack_synonyms", {})
+    """单端候选注册表行（离线）。kind 精确；stack/form 对行内 token 子串匹配。"""
+    rows_src = _raw().get("templates", {})
     rows = []
     for name, meta in rows_src.items():
         if kind and meta.get("kind") != kind:
             continue
         if stack and not any(
-            stack.lower() in x.lower()
-            for x in _expand(meta.get("stack") or [], stack_syn)
+            stack.lower() in token.lower() for token in (meta.get("stack") or [])
         ):
             continue
         if form and not any(
-            form.lower() in x.lower()
-            for x in _expand(meta.get("forms") or [], form_syn)
+            form.lower() in token.lower() for token in (meta.get("forms") or [])
         ):
             continue
         rows.append({"name": name, **meta})
@@ -65,23 +46,16 @@ def list_templates(
 
 
 def filter_hint() -> str:
-    """L1 受控词表提示文本（由 templates.yaml _filter_vocab 生成，壳/LLM 不必猜过滤值）。"""
-    vocab = _vocab()
-    kinds = " | ".join(vocab.get("kinds", []))
-    form_parts = [
-        f"{k}({'/'.join(aliases)})"
-        for k, aliases in vocab.get("form_synonyms", {}).items()
-    ]
-    stack_parts = [
-        f"{a}={k}"
-        for k, aliases in vocab.get("stack_synonyms", {}).items()
-        for a in aliases
-    ]
+    """L1 提示文本（由 templates.yaml _filter_vocab.kinds 生成；不含同义词——LLM 读行内数据即可）。"""
+    raw = _raw()
+    templates = raw.get("templates", {})
+    kinds = raw.get("_filter_vocab", {}).get("kinds") or sorted(
+        {m["kind"] for m in templates.values() if "kind" in m}
+    )
     return (
-        "受控 L1 过滤（list_templates 带参，子串/同义词匹配）：\n"
-        f"  kind ∈ {kinds}\n"
-        f"  form 别名：{'、'.join(form_parts) or '—'}\n"
-        f"  stack 同义词：{', '.join(stack_parts) or '—'}\n"
+        "L1 过滤（list_templates 带参）：kind 精确；stack/form 对行内 token 子串匹配。\n"
+        f"  kind ∈ {' | '.join(kinds)}\n"
+        "  词按行内数据（stack/forms）填即可，无需同义词——读候选行判断命中。\n"
     )
 
 

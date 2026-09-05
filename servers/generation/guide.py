@@ -22,7 +22,7 @@ _GUIDE = """# 项目生成玩法（生成面 · 需求 → 项目目录）
 
 ## 2 L1 硬过滤（仅在有显式约束时）
 受控取值（现役，来自工具/资源返回，不要发明新词）：
-- `list_templates`：`kind` ∈ {frontend, backend, cli, fullstack}；`form` 用**别名子串**匹配——用户说纯前端/单页/spa 都能命中，forms 是含「spa/前端单页应用/纯前端…」的别名数组；`stack` 同样**子串匹配**技术 token（说 react/ts 都能命中）。
+- `list_templates`：`kind` ∈ {frontend, backend, cli, fullstack}（精确）；`stack`/`form` 对行内 token 子串匹配——先读候选行数据按需填词即可，**无需同义词/别名层**（壳带 LLM，会自行传参）。
 - `list_combos`：`stack` 用单元 `stack` 文本中的技术 token（如 react / vue / fastapi）。
 无显式约束可跳过 L1，直接给候选。
 

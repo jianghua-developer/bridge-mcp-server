@@ -1,24 +1,11 @@
 # templates.yaml —— 单端候选注册表（薄指针菜单，非生成门槛）
 # 字段纪律（DESIGN §5.3）：只放离线 L1 身份/标签；深选择事实单一真源在各底座 params.json selection 区。
 # 共享底座用与 combos.yaml bases 相同裸名；纯单端底座（cli/nuxt 等）只在此注册。
-
-# ── L1 受控词表（单一真源：匹配展开与 templates://catalog 词表提示都由此生成，勿在别处另写）──
-# kinds：受控大类
-# form_synonyms：form token → 同义叫法（用户说纯前端/单页/spa 都能命中）
-# stack_synonyms：stack token → 常见简称/同义（行内另写 token 即可命中；子串匹配兜底）
+#
+# L1 过滤语义（A 简化定案）：kind 精确；stack/form 对行内 token 子串。不维护同义词/别名——
+# 消费方自带 LLM 能读行内数据（kind/stack/forms）自行传参，无需我们翻译口语。
 _filter_vocab:
-  kinds: [frontend, backend, cli, fullstack]
-  form_synonyms:
-    spa: [spa, 前端单页应用, 纯前端, 单页应用]
-    api: [api, 后端服务, 纯后端, 后端 API]
-    fullstack: [fullstack, 单仓全栈, 全栈单仓]
-    cli: [cli, 命令行, 命令行工具]
-  stack_synonyms:
-    react: [reactjs]
-    vue3: [vue]
-    typescript: [ts]
-    python: [py]
-    vite: [vitejs]
+  kinds: [frontend, backend, cli, fullstack]   # kind 受控枚举（提示用，单一真源）
 
 templates:
   vite-react-spa-template:
