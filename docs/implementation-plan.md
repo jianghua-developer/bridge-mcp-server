@@ -63,7 +63,7 @@ P0 协议升版（P 仓）──► P1 底座接入（B 仓：示范→铺开）
 
 ### P3 · 能力层骨架落地 —— bridge-mcp-server（依赖 P0-P2 契约就绪；单端腿可提前 fixture 并行）
 
-- [ ] init git + `pyproject.toml`（uv，FastMCP，非发布型）+ **目录骨架（DESIGN §3.1）**：`bridge_mcp/` 共享胶水（config/bridge_cli/protocol/selection）+ `servers/generation/`（主线入口 + templates.yaml）+ `servers/governance/`（占位 README，不写代码）；server 配置桥 cli 入口（纯 env：`BRIDGE_EXE` > `BRIDGE` > `BRIDGE_CLI`，无默认路径）。
+- [ ] init git + `pyproject.toml`（uv，FastMCP，非发布型）+ **目录骨架（DESIGN §3.1）**：`bridge_mcp/` 共享胶水（config/bridge_cli/protocol/selection）+ `servers/generation/`（主线入口 + templates.yaml）+ `servers/governance/`（占位 README，不写代码）；server 配置桥 cli 入口（纯 env：`BRIDGE_EXE` > `BRIDGE`，**仅可执行**，无默认路径、不暴露源码 cli.py）。
 - [ ] `templates.yaml`（单端候选注册表，薄指针）：现可用单端底座（react/vue/fastapi，①③④形态）各一条 `name/git/kind/stack/forms`；纯单端（cli/nuxt）留位。**不抄 selection**。
 - [ ] 工具（DESIGN §6，**六个生成面工具**，不含 check/治理）：
   - 单端：`list_templates`（读 templates.yaml 离线 L1 过滤）、`get_template_params`（clone → 读 params.json 两区；无协议地址回退 copier.yml）、`generate_single`（clone → 校验 → 指 template/ → copier）；

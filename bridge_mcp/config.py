@@ -1,9 +1,9 @@
 """server 配置：桥 cli 入口、克隆缓存根——**纯 env 注入，代码不内嵌任何默认路径**。
 
-多端腿消费的桥 cli（DESIGN §5.2：进程边界 + 数据契约）解析链：
-  1. `BRIDGE_EXE`  → dist/bridge 可执行（生产首选，自包含 python+copier+click+baked params）
-  2. `BRIDGE`      → PATH 上名为 <值> 的命令（如安装的 bridge 控制台入口）
-  3. `BRIDGE_CLI`  → 源码 cli.py 路径（dev 显式）
+多端腿消费的桥 cli（DESIGN §5.2：进程边界 + 数据契约）解析链——只认**可执行入口**，
+不暴露源码（BRIDGE_CLI 已移除）：
+  1. `BRIDGE_EXE` → dist/bridge 可执行（首选，自包含 python+copier+click+baked params）
+  2. `BRIDGE`     → PATH 上名为 <值> 的命令（如安装的 bridge 控制台入口）
 均未设置 → 明确报错（不猜 sibling/默认目录）。
 
 缓存根：`BRIDGE_MCP_CACHE` > `~/.cache/bridge-mcp-server`。
@@ -11,7 +11,6 @@
 
 import os
 import shutil
-import sys
 from pathlib import Path
 
 
@@ -31,18 +30,10 @@ def bridge_cmd() -> list[str]:
             return [found]
         raise RuntimeError(f"BRIDGE 指定的命令不在 PATH: {name}")
 
-    cli = os.environ.get("BRIDGE_CLI")
-    if cli:
-        p = Path(cli)
-        if p.exists():
-            return [sys.executable, str(p)]
-        raise RuntimeError(f"BRIDGE_CLI 指向的 cli.py 不存在: {p}")
-
     raise RuntimeError(
-        "未配置桥 cli 入口。三选一（env 注入，MCP 注册时提供）：\n"
-        "  BRIDGE_EXE = <dist/bridge 可执行>   # 生产首选\n"
-        "  BRIDGE     = <PATH 上的 bridge 命令>\n"
-        "  BRIDGE_CLI = <fullstack-bridge/cli.py 路径>   # dev 显式"
+        "未配置桥 cli 可执行入口。二选一（env 注入，MCP 注册时提供）：\n"
+        "  BRIDGE_EXE = <dist/bridge 可执行>   # 首选\n"
+        "  BRIDGE     = <PATH 上的 bridge 命令>"
     )
 
 

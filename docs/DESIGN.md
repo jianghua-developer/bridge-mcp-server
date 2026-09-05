@@ -125,7 +125,7 @@ bridge-mcp-server/
 | cli.py / dist/bridge | fullstack-bridge | 多端执行器 + **内省面**（见 §5.4），Click，`--json` 机器输出 |
 | combos/\<组合\>/copier.yml | fullstack-bridge | 契约模板参数声明 |
 
-server 配置需声明：桥 cli 命令入口（**纯 env 注入**，代码不内嵌默认路径）——解析链 `BRIDGE_EXE`（dist/bridge 可执行，生产首选）> `BRIDGE`（PATH 命令）> `BRIDGE_CLI`（源码 cli.py，dev）；均未设则明确报错。server 对该入口之外桥的内部（combos.yaml、底座缓存）**零感知**；源码直跑时不借 server env（桥依赖各归各仓）。
+server 配置需声明：桥 cli **可执行入口**（**纯 env 注入**，代码不内嵌默认路径）——解析链 `BRIDGE_EXE`（dist/bridge 可执行，首选）> `BRIDGE`（PATH 命令）；均未设则明确报错。**只认可执行，不暴露源码 cli.py 路径**（BRIDGE_CLI 已移除）；本地测试 = 打包桥的可执行再注入。server 对该入口之外桥的内部（combos.yaml、底座缓存）**零感知**。
 
 **多端链（纯 cli，生成面）**：`list_combos` / `get_combo_params` → 桥内省；`generate_multi` → 桥 `generate`。桥已单模式、只收注册 combo。治理链（桥 `check`：漂移/对齐）服务 CI workflow，**本 server 不消费、不暴露**——生成面与治理面分开（§10）。
 
