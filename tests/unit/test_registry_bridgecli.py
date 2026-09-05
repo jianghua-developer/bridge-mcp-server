@@ -52,10 +52,10 @@ def test_bridge_cli_with_stub(tmp_path):
     assert c.list_combos() == [{"combo": "python-react", "units": []}]
 
 
-# ── tools_multi.list_combos 过滤（monkeypatch _cli）─────────────
+# ── tools_multi list_combos stack 过滤（纯逻辑 _filter_rows）────
 
 
-def test_list_combos_stack_filter(monkeypatch):
+def test_list_combos_stack_filter():
     rows = [
         {
             "combo": "python-react",
@@ -72,11 +72,6 @@ def test_list_combos_stack_filter(monkeypatch):
             ],
         },
     ]
-
-    class Fake:
-        def list_combos(self):
-            return rows
-
-    monkeypatch.setattr(tools_multi, "_cli", Fake())
-    got = tools_multi.list_combos(stack="vue")
+    got = tools_multi._filter_rows(rows, stack="vue")
     assert [r["combo"] for r in got] == ["python-vue"]  # 仅 vue 行命中
+    assert tools_multi._filter_rows(rows, None) == rows

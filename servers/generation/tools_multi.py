@@ -8,25 +8,27 @@ from pathlib import Path
 
 from bridge_mcp.bridge_cli import BridgeCli
 
-_cli = BridgeCli()
+
+def _filter_rows(rows: list[dict], stack: str | None) -> list[dict]:
+    """L1 stack 过滤（单元 stack 文本子串；空 = 不过滤）。"""
+    if not stack:
+        return rows
+    token = stack.lower()
+    return [
+        r
+        for r in rows
+        if any(token in (u.get("stack") or "").lower() for u in r.get("units", []))
+    ]
 
 
 def list_combos(stack: str | None = None) -> list[dict]:
     """多端菜单行（units/edges + 合并 selection）。stack 可选 L1 过滤（单元 stack 文本）。"""
-    rows = _cli.list_combos()
-    if stack:
-        token = stack.lower()
-        rows = [
-            r
-            for r in rows
-            if any(token in (u.get("stack") or "").lower() for u in r.get("units", []))
-        ]
-    return rows
+    return _filter_rows(BridgeCli().list_combos(), stack)
 
 
 def get_combo_params(combo: str) -> dict:
     """参数基线（params/internal/derived/selection，桥 show-combo 分列）。"""
-    return _cli.show_combo(combo)
+    return BridgeCli().show_combo(combo)
 
 
 def generate_multi(
@@ -34,7 +36,7 @@ def generate_multi(
 ) -> dict:
     """shell-out 桥 `generate <combo> <project>`（选项由桥 schema 数据驱动）。"""
     dest = Path(target_dir)
-    _cli.generate(combo, dest, params, skip_tasks=skip_tasks)
+    BridgeCli().generate(combo, dest, params, skip_tasks=skip_tasks)
     structure = sorted(p.name for p in dest.iterdir()) if dest.exists() else []
     contract = dest / "docs" / "CONTRACT.md"
     readme = dest / "README.md"
