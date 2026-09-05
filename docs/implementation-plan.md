@@ -82,7 +82,7 @@ P0 协议升版（P 仓）──► P1 底座接入（B 仓：示范→铺开）
 
 - [ ] 玩法 Prompt 打磨（双路径仪式、L2 输出结构化推荐样例）。
 - [x] 壳侧可选快捷键（如 Claude Code `generate-project` skill 只引用本 server 工具）——已落地：canonical 在仓库 [skills/generate-project/SKILL.md](skills/generate-project/SKILL.md)，已同步 `~/.claude/skills/generate-project/`（玩法只引用工具，不抄知识）。
-- [ ] 纯单端底座入册流程文档（新增底座 = 协议自述 + templates.yaml 一行的 SOP）。
+- [x] 纯单端底座入册流程文档（新增底座 = 协议自述 + templates.yaml 一行的 SOP）——见 [docs/onboarding-single-template.md](onboarding-single-template.md)。
 - [ ] 未来组合（python-vue / ui-bff-api 三单元链）就绪后：验证 combo 段「仅不可约」纪律是否够用，若不够回改 DESIGN §8。
 
 ## 4. 分项目任务总表（Rollup）
