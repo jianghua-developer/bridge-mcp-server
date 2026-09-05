@@ -74,7 +74,7 @@ P0 协议升版（P 仓）──► P1 底座接入（B 仓：示范→铺开）
 - [x] Resources：`templates://`（自持）、`combos://`（桥内省物化，只读）；Prompts：`generate_project_guide`（引用注册表、不抄清单）。
 - [x] 严格校验：spec 结构化、派生参数禁止、`target_dir` 空/不存在、值类型/choices。
 - [x] 测试：单测 mock 掉 clone / 协议读 / copier / 桥 cli；e2e 起 server——`generate_single` 打真实 copier、`generate_multi` 打真实 `cli.py generate`，临时目录清理。
-- [ ] **S3（P2 评审遗留，2026-09-05）**：selection 字段集单一真源对齐——把 `suited_for`/`tradeoffs` 字段集写进协议 `SCHEMA.md`（契约点）；能力层消费时对底座 selection 含桥未知字段**显式告警而非静默丢弃**（桥 `SELECTION_FIELDS` 随协议演进同步，防内省面比底座策展少）。（部分已落地：能力层告警 = `bridge_mcp/selection.py`；**协议 SCHEMA 契约点跨仓回写待做**）
+- [x] **S3（P2 评审遗留，2026-09-05）**：selection 字段集单一真源对齐——`suited_for`/`tradeoffs` 字段集写进协议 [SCHEMA.md](../../../fullstack-param-protocol/SCHEMA.md)（契约点，2dda1ba）；能力层对底座 selection 含未知字段显式告警（`bridge_mcp/selection.py` → get_template_params `selection_warning`）；桥/能力层两处 `SELECTION_FIELDS` 引用随表同步。
 - **理由**：DESIGN 定稿落地；依赖 ①-③ 契约就绪，保证多端链只消费 cli 的契约可测。
 - **验收**：stdio 起 server；六工具可调用；单端/多端各一条 e2e 生成出目录。（check 治理链不出现在工具面）
 

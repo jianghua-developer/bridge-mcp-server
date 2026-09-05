@@ -1,7 +1,7 @@
 # bridge-mcp-server 设计文档
 
 > AI Foundation 系列 · 能力层壳无关封装（MCP）
-> 状态：设计定稿（2026-09 评审收敛：双路径×双链、协议两区、单端候选注册表）。**P3 生成面 server 骨架已落地**（uv 项目，main 已推 origin）——目录见 §3.1；治理面（governance）为占位未实现；S3 协议 SCHEMA 契约点跨仓回写待办。
+> 状态：设计定稿（2026-09 评审收敛：双路径×双链、协议两区、单端候选注册表）。**P3 生成面 server 骨架已落地**（uv 项目，main 已推 origin）——目录见 §3.1；治理面（governance）为占位未实现；S3（selection 字段集单一真源）已闭环（协议 SCHEMA 契约点 + 能力层告警）。
 
 ## 1. 定位
 
