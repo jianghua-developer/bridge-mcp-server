@@ -4,24 +4,25 @@
 # 共享底座用与 combos.yaml bases 相同裸名（同一身份）；纯单端底座（cli/nuxt 等）只在此注册。
 #
 # kind：受控大类 frontend | backend | cli | fullstack（新增先与玩法/design 对齐）
-# forms：该底座可直生成的单端形态——受控语义 token（不用 DESIGN 编号）：
-#   spa       纯前端单页应用（需后端/API 供数据）
-#   api       纯后端服务（独立 API）
-#   fullstack 单仓全栈（自含 BFF/SSR，如 Nuxt）
-#   cli       纯命令行工具
+# forms：该底座可直生成的单端形态 —— 别名数组（首项 = 主 token，后为常见同义叫法），
+#   便于把用户口语约束映射到候选（list_templates 按子串匹配）。受控语义词（不用 DESIGN 编号）：
+#   spa / 前端单页应用 / 纯前端      （需后端/API 供数据的前端 SPA）
+#   api / 后端服务 / 纯后端          （独立 API 后端）
+#   fullstack / 单仓全栈 / 全栈单仓  （自含 BFF/SSR，如 Nuxt）
+#   cli / 命令行 / 命令行工具
 templates:
   vite-react-spa-template:
     git: https://github.com/jianghua-developer/vite-react-spa-template.git
     kind: frontend
     stack: [react, vite, typescript]
-    forms: ["spa"]
+    forms: ["spa", "前端单页应用", "纯前端", "单页应用"]
   vite-vue-spa-template:
     git: https://github.com/jianghua-developer/vite-vue-spa-template.git
     kind: frontend
     stack: [vue3, vite, typescript]
-    forms: ["spa"]
+    forms: ["spa", "前端单页应用", "纯前端", "单页应用"]
   python-fastapi-template:
     git: https://github.com/jianghua-developer/python-fastapi-template.git
     kind: backend
     stack: [python, fastapi]
-    forms: ["api"]
+    forms: ["api", "后端服务", "纯后端", "后端 API"]

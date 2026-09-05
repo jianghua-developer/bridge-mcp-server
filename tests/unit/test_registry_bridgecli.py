@@ -25,6 +25,17 @@ def test_list_templates_filter():
     assert [r["name"] for r in vue] == ["vite-vue-spa-template"]
 
 
+def test_list_templates_form_alias_match():
+    """form 按别名子串匹配：口语『纯前端/单页应用』命中前端 SPA。"""
+    for alias in ("spa", "纯前端", "单页应用"):
+        got = tools_single.list_templates(form=alias)
+        assert {r["name"] for r in got} == {
+            "vite-react-spa-template",
+            "vite-vue-spa-template",
+        }, alias
+    assert tools_single.list_templates(form="cli") == []  # 现役无 cli
+
+
 # ── bridge_cli JSON 解析（容忍 warning 前缀）────────────────────
 
 

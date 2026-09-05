@@ -31,7 +31,9 @@ def list_templates(
             continue
         if stack and stack not in (meta.get("stack") or []):
             continue
-        if form and form not in (meta.get("forms") or []):
+        if form and not any(
+            form.lower() in alias.lower() for alias in (meta.get("forms") or [])
+        ):
             continue
         rows.append({"name": name, **meta})
     return rows
