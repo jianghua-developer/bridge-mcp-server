@@ -24,6 +24,10 @@
 
 - [docs/DESIGN.md](docs/DESIGN.md) — 设计定稿（本仓唯一事实源）。改代码前先过它；评审意见/变更先改 DESIGN.md 再动代码。
 
+## 壳侧 skill（项目资产）
+
+- canonical 维护在 [skills/generate-project/SKILL.md](skills/generate-project/SKILL.md)（本仓不入 `.claude/`）；需要时同步到全局 `~/.claude/skills/generate-project/SKILL.md` 即可（任何目录可触发）。玩法只引用本 server 工具，不抄知识。
+
 ## 开发 / 测试前置（本机约束，仅本仓记，勿写进系列记忆 series-overview）
 
 **多端链测试 / 跑 server 前，必须先自行打包 fullstack-bridge 的可执行**，本仓没有也不打算暴露源码 cli.py 路径：
